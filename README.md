@@ -205,14 +205,14 @@ Download the checkpoint used for inference:
 
 ```bash
 hf download LeshaGolosha/transformer-machine-translation \
-    last_model.pt \
+    best_model.pt \
     --local-dir checkpoints
 ```
 
 The checkpoint will be saved to:
 
 ```text
-checkpoints/last_model.pt
+checkpoints/best_model.pt
 ```
 
 ## Inference

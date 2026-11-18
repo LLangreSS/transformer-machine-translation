@@ -21,7 +21,7 @@ def load_model():
     ).to(Config.DEVICE)
 
     checkpoint = torch.load(
-        "checkpoints/last_model.pt",
+        "checkpoints/best_model.pt",
         map_location=Config.DEVICE,
         weights_only=True
     )
