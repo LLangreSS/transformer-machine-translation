@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformer Translator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --background: #f7f7f5;
+            --surface: #ffffff;
+            --text: #20211f;
+            --secondary: #777873;
+            --border: #e5e5e1;
+            --accent: #252723;
+            --accent-hover: #41443e;
+            --success: #52785b;
+            --error: #b94c43;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 72px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            font-size: 15px;
+            font-weight: 650;
+            letter-spacing: -0.3px;
+        }
+
+        .brand span {
+            color: var(--secondary);
+            font-weight: 400;
+        }
+
+        .header-meta {
+            font-size: 12px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        main {
+            width: min(1000px, 88%);
+            margin: 0 auto;
+            padding: 75px 0 90px;
+            flex: 1;
+        }
+
+        .intro {
+            margin-bottom: 42px;
+        }
+
+        .eyebrow {
+            font-size: 12px;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: clamp(30px, 4vw, 42px);
+            font-weight: 550;
+            letter-spacing: -1.6px;
+            line-height: 1.2;
+        }
+
+        .intro p {
+            margin-top: 12px;
+            color: var(--secondary);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .translator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .panel {
+            min-width: 0;
+        }
+
+        .panel + .panel {
+            border-left: 1px solid var(--border);
+        }
+
+        .panel-header {
+            height: 58px;
+            padding: 0 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .language {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .language-code {
+            font-size: 11px;
+            color: var(--secondary);
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 24px;
+            resize: vertical;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.75;
+        }
+
+        textarea::placeholder {
+            color: #b0b1ac;
+        }
+
+        .output {
+            min-height: 298px;
+            padding: 24px;
+            font-size: 16px;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .placeholder {
+            color: #b0b1ac;
+        }
+
+        .panel-footer {
+            height: 46px;
+            padding: 0 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 22px;
+        }
+
+        .left-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .text-button {
+            border: none;
+            background: transparent;
+            color: var(--secondary);
+            font-size: 12px;
+            padding: 8px 0;
+        }
+
+        .text-button:hover {
+            color: var(--text);
+        }
+
+        .translate-button {
+            border: none;
+            background: var(--accent);
+            color: white;
+            padding: 13px 22px;
+            font-size: 13px;
+            font-weight: 550;
+        }
+
+        .translate-button:hover {
+            background: var(--accent-hover);
+        }
+
+        .translate-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 14px;
+        }
+
+        footer {
+            padding: 22px 7%;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            color: var(--secondary);
+            font-size: 12px;
+        }
+
+        footer span:last-child {
+            text-align: right;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 0 5%;
+                height: 64px;
+            }
+
+            main {
+                width: 90%;
+                padding: 45px 0;
+            }
+
+            .intro {
+                margin-bottom: 28px;
+            }
+
+            .translator {
+                grid-template-columns: 1fr;
+            }
+
+            .panel + .panel {
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+
+            textarea {
+                height: 200px;
+            }
+
+            .output {
+                min-height: 220px;
+            }
+
+            .controls {
+                gap: 16px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .translate-button {
+                width: 100%;
+            }
+
+            footer {
+                flex-direction: column;
+                padding: 20px 5%;
+            }
+
+            footer span:last-child {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">Transformer <span>/ Translation</span></div>
+
+    <div class="header-meta">
+        <span class="dot"></span>
+        <span>English — Russian</span>
+    </div>
+</header>
+
+<main>
+
+    <section class="intro">
+        <div class="eyebrow">Machine translation</div>
+        <h1>English to Russian</h1>
+        <p>Translate text using a Transformer neural network.</p>
+    </section>
+
+    <section class="translator">
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="language">English</span>
+                <span class="language-code">EN</span>
+            </div>
+
+            <textarea
+                id="source"
+                placeholder="Enter text to translate..."
+                maxlength="2000"
+            ></textarea>
+
+            <div class="panel-footer">
+                <span id="charCount">0 / 2000</span>
+                <button class="text-button" onclick="clearText()">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="language">Russian</span>
+                <span class="language-code">RU</span>
+            </div>
+
+            <div id="result" class="output placeholder">
+                Translation will appear here.
+            </div>
+
+            <div class="panel-footer">
+                <span id="outputStatus">Ready</span>
+                <button
+                    id="copyBtn"
+                    class="text-button"
+                    onclick="copyTranslation()"
+                    disabled
+                >
+                    Copy
+                </button>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="controls">
+        <div class="left-controls">
+            <span class="hint">Ctrl + Enter to translate</span>
+        </div>
+
+        <button id="translateBtn"
+                class="translate-button"
+                onclick="translateText()">
+            Translate
+        </button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+</main>
+
+<footer>
+    <span>PyTorch · FastAPI · Transformer</span>
+    <span>Encoder–Decoder architecture</span>
+</footer>
+
+<script>
+    const source = document.getElementById("source");
+    const result = document.getElementById("result");
+    const button = document.getElementById("translateBtn");
+    const error = document.getElementById("error");
+    const charCount = document.getElementById("charCount");
+    const outputStatus = document.getElementById("outputStatus");
+    const copyBtn = document.getElementById("copyBtn");
+
+    function updateCharCount() {
+        charCount.textContent = `${source.value.length} / 2000`;
+    }
+
+    function clearText() {
+        source.value = "";
+        result.textContent = "Translation will appear here.";
+        result.classList.add("placeholder");
+        error.textContent = "";
+        outputStatus.textContent = "Ready";
+        copyBtn.disabled = true;
+        updateCharCount();
+        source.focus();
+    }
+
+    async function copyTranslation() {
+        const text = result.textContent;
+
+        try {
+            await navigator.clipboard.writeText(text);
+            copyBtn.textContent = "Copied";
+
+            setTimeout(() => {
+                copyBtn.textContent = "Copy";
+            }, 1500);
+        } catch {
+            error.textContent = "Unable to copy translation.";
+        }
+    }
+
+    async function translateText() {
+        const text = source.value.trim();
+
+        if (!text) {
+            error.textContent = "Enter text to translate.";
+            source.focus();
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Translating...";
+        error.textContent = "";
+        result.classList.remove("placeholder");
+        result.textContent = "Generating translation...";
+        outputStatus.textContent = "Processing";
+        copyBtn.disabled = true;
+
+        try {
+            const response = await fetch("/translate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            result.textContent =
+                data.translation || "No translation returned.";
+
+            outputStatus.textContent = "Completed";
+            copyBtn.disabled = !data.translation;
+
+        } catch (err) {
+            result.textContent = "Translation failed.";
+            error.textContent = err.message;
+            outputStatus.textContent = "Error";
+
+        } finally {
+            button.disabled = false;
+            button.textContent = "Translate";
+        }
+    }
+
+    source.addEventListener("input", updateCharCount);
+
+    source.addEventListener("keydown", (event) => {
+        if (event.ctrlKey && event.key === "Enter") {
+            translateText();
+        }
+    });
+</script>
+
+</body>
+</html>
