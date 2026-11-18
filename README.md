@@ -169,16 +169,23 @@ Other limitations include:
 ## Project Structure
 
 ```text
+
 transformer-machine-translation/
+├── assets/
+│   ├── img.png
+│   └── img_1.png
 ├── src/
 │   ├── data/
+│   │   ├── __init__.py
 │   │   ├── dataset.py
-│   │   ├── dataloader.py
-│   │   └── tokenizer.py
+│   │   ├── encode_dataset.py
+│   │   ├── preprocessing.py
+│   │   ├── tokenizer.py
+│   │   └── train_tokenizers.py
 │   ├── evaluation/
+│   │   ├── compare_train_test.py
 │   │   ├── evaluate.py
-│   │   ├── translate.py
-│   │   └── compare_train_test.py
+│   │   └── translate.py
 │   ├── model/
 │   │   ├── attention.py
 │   │   ├── decoder.py
@@ -187,19 +194,47 @@ transformer-machine-translation/
 │   │   ├── feed_forward.py
 │   │   ├── masks.py
 │   │   ├── positional_encoding.py
-│   │   └── transformer.py
+│   │   ├── transformer.py
+│   │   ├── transformer_decoder.py
+│   │   └── transformer_encoder.py
 │   ├── training/
-│   │   ├── train.py
+│   │   ├── benchmark.py
 │   │   ├── run.py
-│   │   └── benchmark.py
-│   ├── config.py
-│   └── api.py
-├── tests/
-├── tokenizers/
+│   │   └── train.py
+│   ├── __init__.py
+│   ├── api.py
+│   └── config.py
 ├── static/
-├── requirements.txt
+│   └── index.html
+├── tests/
+│   ├── test_attention.py
+│   ├── test_collate_fn.py
+│   ├── test_dataloaders.py
+│   ├── test_dataset.py
+│   ├── test_decoder.py
+│   ├── test_encoded_dataset.py
+│   ├── test_encoder.py
+│   ├── test_epoch_functions.py
+│   ├── test_masks.py
+│   ├── test_resume_training.py
+│   ├── test_tokenizer.py
+│   ├── test_train_model.py
+│   ├── test_training_setup.py
+│   ├── test_training_step.py
+│   ├── test_transformer.py
+│   ├── test_transformer_decoder.py
+│   ├── test_transformer_encoder.py
+│   └── test_validation_step.py
+├── tokenizers/
+│   ├── en.model
+│   ├── en.vocab
+│   ├── ru.model
+│   └── ru.vocab
+├── .gitignore
+├── README.md
 ├── requirements-dev.txt
-└── README.md
+└── requirements.txt
+
 ```
 
 ## Installation
